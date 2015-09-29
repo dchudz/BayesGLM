@@ -1,3 +1,5 @@
+# https://pystan.readthedocs.org/en/latest/avoiding_recompilation.html
+
 import pickle
 import pystan
 from hashlib import md5

@@ -128,6 +128,9 @@ def slice_to_range(s):
 def glm(formula, df, regression_type, priors = {}):
     y, x = dmatrices(formula, df)
     x_ = np.asarray(x)
+    if regression_type.distribution.y_type == "int": # (necessary b/c patsy converts to float)
+        y = y.astype("int")
     y_ = np.asarray(np.squeeze(y))
+    print(type(y_[0]))
     beta_priors_list = [(slice_to_range(x.design_info.slice(key)), val) for key, val in priors.items()]
     return glm(x_, y_, regression_type, priors= beta_priors_list)
