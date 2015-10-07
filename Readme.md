@@ -2,6 +2,8 @@
 
 This package aims to bring convenient Bayesian GLMs (and other GLM-like models) to Python, with the help of [Patsy](https://patsy.readthedocs.org/en/latest/), [Stan](http://mc-stan.org/), and [PyStan](https://pystan.readthedocs.org/en/latest/).
 
+Stan is a very flexible modeling language with a state-of-the-art sampler. This package aims to use Stan's power to make Bayesian GLMs (and other GLM-like models) available to users, without the need to write Stan code, by generating appropriate Stan code for each model and fitting the model using Stan.
+
 Here are some examples:
 
 ```
