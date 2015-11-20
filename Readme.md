@@ -30,15 +30,22 @@ glm("y_binary ~ x1 + x2", df, RegressionModels.logistic)
 glm("y_binary ~ x1 + x2", df, RegressionModel(OutcomeDistributions.bernoulli, "Phi"))
 ```
 
-Todo:
+# Todo
 
-- give better output
-	+ (At the moment, `glm` gives you raw output from PyStan. I should do something to translate that back into the terms of the original formula / dataframe.)
+## Before alpha release
+
+- format output more nicely
+	+ (At the moment, `glm` gives you raw output from PyStan. I should do something to translate that back into the terms of the variables in the original formula / dataframe.)
 - allow making predictions on new data
+- test suite
+- more examples!
+
+## Later
+
 - ability to specify prior for parameters of the outcome distribution (e.g. `sigma` for normal distributions)
 - switch the way I specify `beta`s priors in the Stan code so that we don't have to compile so many models. (e.g. the parameters of the prior distribution should be data sent to Stan, not in the Stan code itself.)
 - prepackage compiled Stan models so that user doesn't have to wait for compilation even once
 
-After that:
+## Much later
 
 - hierarchical models!
