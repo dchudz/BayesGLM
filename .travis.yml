@@ -23,10 +23,13 @@ before_install:
   - ./miniconda.sh -b -p $HOME/miniconda
   - export PATH=$HOME/miniconda/bin:$PATH
   - conda update --yes conda
+
 # Install packages
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas pystan nose
   - python setup.py install
+  - which nosetests
+  - which python
 
 # Run test
 script:
