@@ -33,4 +33,4 @@ install:
 
 # Run test
 script:
-  - nosetests -w /tmp bayesglm
+  - nosetests bayesglm/tests
