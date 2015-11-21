@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dchudz/BayesGLM.svg?branch=master)](https://travis-ci.org/dchudz/BayesGLM.svg?branch=master)
+
 # BayesGLM
 
 This package aims to bring convenient Bayesian GLMs (and other GLM-like models) to Python, with the help of [Patsy](https://patsy.readthedocs.org/en/latest/), [Stan](http://mc-stan.org/), and [PyStan](https://pystan.readthedocs.org/en/latest/).
