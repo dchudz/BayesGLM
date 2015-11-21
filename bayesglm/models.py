@@ -1,10 +1,9 @@
-__author__ = 'david'
-
 from bayesglm.stan_cache import stan_cache
 from collections import namedtuple
 from patsy import dmatrices
 from multipledispatch import dispatch
 import numpy as np
+
 
 MODEL_CODE = """
    data {{
@@ -80,7 +79,7 @@ class NormalPrior:
         return "normal({0},{1})".format(self.mu, self.sigma)
 
 
-class RegressionModel:
+class RegressionModel(object):
     def __init__(self, distribution, link):
         self.distribution = distribution
         self.link = link

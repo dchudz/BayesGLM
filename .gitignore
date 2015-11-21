@@ -1,5 +1,5 @@
 .idea/
 __pycache__/
-cached_models/
 BayesGLM.egg-info/
 bayesglm/.cached_models
+*.pyc
