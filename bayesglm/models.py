@@ -3,51 +3,11 @@ from collections import namedtuple
 from patsy import dmatrices
 from multipledispatch import dispatch
 import numpy as np
+import os
 
-
-MODEL_CODE = """
-   data {{
-     int<lower=1> K;
-     int<lower=0> N;
-     {0} y[N];
-     matrix[N,K] x;
-   }}
-   parameters {{
-     vector[K] beta;
-     {1}
-   }}
-   model {{
-    real mu[N];
-    vector[N] eta   ;
-    eta <- x*beta;
-    for (i in 1:N) {{
-       mu[i] <- {2}(eta[i]);
-    }};
-    {3}
-    {4}
-   }}
-"""
-
-
-
-# x_.design_info.slice("c[T.c]")
-
-# maybe priors are specified like:
-#   iid_priors=Normal(0,10)
-#   iid_priors=Uniform(5,15)
-
-# "y ~ x1 + x2"
-
-# {"x1": Uniform(5, 15)}
-# {"x2": Normal(0,10)}
-# {"cat1": Normal(0,1)} - refers to all
-# {"1": (constant term)
-
-# nothing: uniform improper
-
-# can we include all supported priors in the loop to have fewer models?
 
 OutcomeDistribution = namedtuple('OutcomeDistribution', ['y_type', 'parameter_names', 'parameter_statement', 'model_statement'])
+
 
 class OutcomeDistributions:
     gaussian = OutcomeDistribution(
@@ -70,13 +30,19 @@ class OutcomeDistributions:
     )
 
 
-
 class NormalPrior:
     def __init__(self, mu, sigma):
         self.mu = mu;
         self.sigma = sigma
     def to_string(self):
         return "normal({0},{1})".format(self.mu, self.sigma)
+
+
+def load_model_template():
+    stan_model_path = os.path.join(os.path.dirname(__file__), "model.stan")
+    with open(stan_model_path, "r") as stan_model_file:
+        stan_model_template = stan_model_file.read()
+    return stan_model_template
 
 
 class RegressionModel(object):
@@ -97,11 +63,11 @@ class RegressionModel(object):
 
 
     def stan_code(self, beta_priors):
-        return MODEL_CODE.format(self.distribution.y_type,
-                                 self.distribution.parameter_statement,
-                                 self.link,
-                                 self.distribution.model_statement,
-                                 self.parameter_priors_to_string(beta_priors))
+        return load_model_template().format(y_type=self.distribution.y_type,
+                                            parameter_statement=self.distribution.parameter_statement,
+                                            link_function=self.link,
+                                            model_statement=self.distribution.model_statement,
+                                            beta_priors=self.parameter_priors_to_string(beta_priors))
 
 
 class RegressionModels:

@@ -1,20 +1,8 @@
 import unittest
+from bayesglm.models import load_model_template
 
 
-# Here's our "unit".
-def is_odd(n):
-    return n % 2 == 1
+class Tests(unittest.TestCase):
 
-
-# Here's our "unit tests".
-class IsOddTests(unittest.TestCase):
-
-    def testOne(self):
-        self.assertTrue(is_odd(1))
-
-    def testTwo(self):
-        self.assertFalse(is_odd(2))
-
-
-if __name__ == '__main__':
-    unittest.main()
+    def test_load_model_template(self):
+        self.assertTrue(type(load_model_template()) == str)
