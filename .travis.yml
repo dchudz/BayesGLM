@@ -8,7 +8,11 @@ python:
   - 3.5
 
 notifications:
-  email: false
+  email:
+    recipients:
+      - dchudz@gmail.com
+    on_success: change
+    on_failure: always
 
 # Setup anaconda
 before_install:
