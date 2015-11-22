@@ -5,7 +5,6 @@ import numpy as np
 import os
 
 from .family import Family
-from .capture_stdouterr import Capturing
 
 class NormalPrior:
     def __init__(self, mu, sigma):
