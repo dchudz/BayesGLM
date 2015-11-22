@@ -17,3 +17,5 @@
 
 
 5. in ipython notebook, try reproducing examples from arm's bayesglm
+6. format output
+7. predictions on new data

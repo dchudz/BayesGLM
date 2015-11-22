@@ -4,7 +4,7 @@ from multipledispatch import dispatch
 import numpy as np
 import os
 
-from family import Family
+from .family import Family
 
 
 class NormalPrior:
@@ -64,6 +64,7 @@ def bayesglm(formula, df, family, priors=None):
     if family.distribution.y_type == "int":  # (necessary b/c patsy converts to float)
         y = y.astype("int")
     y_ = np.asarray(np.squeeze(y))
+
     def slice_to_range(s):
         return range(s.start, s.stop)
     beta_priors_list = [(slice_to_range(x.design_info.slice(key)), val) for key, val in priors.items()]
