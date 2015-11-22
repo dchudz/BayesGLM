@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 from .family import Family
-
+from .capture_stdouterr import Capturing
 
 class NormalPrior:
     def __init__(self, mu, sigma):
@@ -40,22 +40,22 @@ def stan_code(family, beta_priors):
                                         parameter_statement=family.distribution.parameter_statement,
                                         link_function=family.link,
                                         model_statement=family.distribution.model_statement,
-                                        beta_priors=family.parameter_priors_to_string(beta_priors))
+                                        beta_priors=parameter_priors_to_string(beta_priors))
 
 
-@dispatch(np.ndarray, np.ndarray, Family)
-def bayesglm(x, y, family, iterations=100, priors=()):
+@dispatch(np.ndarray, np.ndarray)
+def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
     num_rows, num_predictors = x.shape
     model_code = stan_code(family, priors)
-    print(model_code)
     fit = stan_cache(model_code=model_code,
                      data={"x": x, "N": num_rows, "K": num_predictors, "y": y},
                      iter=iterations,
-                     chains=4)
+                     chains=4,
+                     **kwargs)
     return fit
 
 
-@dispatch(str, object, Family)
+@dispatch(str, object)
 def bayesglm(formula, df, family, priors=None):
     if not priors:
         priors = {}
@@ -68,4 +68,4 @@ def bayesglm(formula, df, family, priors=None):
     def slice_to_range(s):
         return range(s.start, s.stop)
     beta_priors_list = [(slice_to_range(x.design_info.slice(key)), val) for key, val in priors.items()]
-    return bayesglm(x_, y_, family, priors=beta_priors_list)
+    return bayesglm(x_, y_, family=family, priors=beta_priors_list)
