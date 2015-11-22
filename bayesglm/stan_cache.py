@@ -10,6 +10,11 @@ def stan_cache(model_code, model_name=None, **kwargs):
     """Use just as you would `stan`"""
     code_hash = md5(model_code.encode('ascii')).hexdigest()
     cache_dir = bayesglm.__path__[0], ".cached_models"
+    try:
+        os.makedirs(cache_dir)
+    except OSError:
+        if not os.path.isdir(cache_dir):
+            raise
     os.makedirs(cache_dir, exist_ok=True)
     if model_name is None:
         cache_fn = os.path.join(cache_dir, 'cached-model-{}.pkl'.format(code_hash))

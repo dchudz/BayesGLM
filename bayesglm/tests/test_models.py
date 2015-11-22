@@ -35,18 +35,18 @@ class Tests(unittest.TestCase):
         x, y = make_matrix_data(num_rows=NUM_ROWS, beta=BETA)
         result = bayesglm(x, y, family=family.gaussian(), iterations=ITERATIONS, seed=0)
         beta_samples = result.extract()['beta']
-        print beta_samples
+        print(beta_samples)
 
     def test_bayesglm_gaussian_dataframe(self):
         df = make_dataframe_data(num_rows=NUM_ROWS, beta=BETA)
         result = bayesglm("y ~ x1 + x2", df, family=family.gaussian())
-        print result
+        print(result)
 
 
     def test_bayesglm_logistic(self):
         df = make_dataframe_data(num_rows=NUM_ROWS, beta=BETA, binary=True)
         result = bayesglm("y ~ x1 + x2", df, family=family.bernoulli())
-        print result
+        print(result)
 
 
     def test_logistic(self):
