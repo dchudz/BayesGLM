@@ -39,8 +39,6 @@ class Tests(unittest.TestCase):
         result_matrix = bayesglm(x, y, family=family.gaussian(), iterations=ITERATIONS, seed=0)
         beta_samples = result_matrix.extract()['beta']
         beta_means = beta_samples.mean(axis=0)
-        print result_matrix
-        print(beta_samples)
         nptest.assert_allclose(beta_means, np.array(BETA), atol=.1)
 
         #check that data frame result is same as matrix result
@@ -54,7 +52,5 @@ class Tests(unittest.TestCase):
         result = bayesglm("y ~ x1 + x2", df, family=family.bernoulli(), iterations=ITERATIONS, seed=0)
         beta_samples = result.extract()['beta']
         beta_means = beta_samples.mean(axis=0)
-        print(result)
         true_betas = np.hstack([[0], BETA])
-        print true_betas
         nptest.assert_allclose(beta_means, true_betas, atol=1) # "0" is true parameter for constant
