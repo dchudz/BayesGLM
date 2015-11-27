@@ -1,5 +1,8 @@
 1. test matrix form of bayesglm (no priors) - gaussian, bernoulli_logit, logit
 2. test formula form of bayesglm (no priors) - gaussian, bernoulli_logit, logit
+
+------^done----
+
 3. test priors for matrix form
 4. implement priors for formula form:
 

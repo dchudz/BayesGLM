@@ -55,7 +55,7 @@ def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
 
 
 @dispatch(str, object)
-def bayesglm(formula, df, family, priors=None):
+def bayesglm(formula, df, family, priors=None, **kwargs):
     if not priors:
         priors = {}
     y, x = dmatrices(formula, df)
@@ -67,4 +67,4 @@ def bayesglm(formula, df, family, priors=None):
     def slice_to_range(s):
         return range(s.start, s.stop)
     beta_priors_list = [(slice_to_range(x.design_info.slice(key)), val) for key, val in priors.items()]
-    return bayesglm(x_, y_, family=family, priors=beta_priors_list)
+    return bayesglm(x_, y_, family=family, priors=beta_priors_list, **kwargs)
