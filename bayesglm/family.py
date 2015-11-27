@@ -19,7 +19,7 @@ def gaussian(link = ""):
         parameter_names=["sigma"],
         parameter_statement="real sigma;",
         model_statement="y ~ normal(mu, sigma);")
-    return Family(outcome_distribution, link=link)
+    return Family(outcome_distributio]n, link=link)
 
 
 def bernoulli_logit():

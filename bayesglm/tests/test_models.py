@@ -4,7 +4,7 @@ from scipy.special import logit, expit
 import pandas as pd
 import unittest
 
-from ..models import load_model_template, bayesglm
+from ..models import load_model_template, bayesglm, NormalPrior
 from .. import family
 
 BETA = np.array([15, 5])
@@ -45,6 +45,15 @@ class Tests(unittest.TestCase):
         df = make_data_frame_data(num_rows=NUM_ROWS, beta=BETA)
         result_data_frame = bayesglm("y ~ 0 + x1 + x2", df, family=family.gaussian(), iterations=ITERATIONS, seed=0)
         nptest.assert_allclose(result_matrix.extract(permuted=False), result_data_frame.extract(permuted=False))
+
+    def test_bayesglm_gaussian_priors(self):
+        x, y = make_matrix_data(num_rows=NUM_ROWS, beta=BETA)
+        normal_prior = NormalPrior(10, .000001)
+        prior1 = ((0))
+        result = bayesglm(x, y, family=family.gaussian(), iterations=ITERATIONS, seed=0)
+        beta_means = result.extract()['beta'].mean(axis=0)
+        nptest.assert_allclose(beta_means, np.array(BETA), atol=.1)
+
 
 
     def test_bayesglm_logistic(self):
