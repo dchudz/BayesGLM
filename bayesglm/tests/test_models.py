@@ -40,7 +40,7 @@ class Tests(unittest.TestCase):
         result_matrix = bayesglm(x, y, family=family.gaussian(), iterations=ITERATIONS, seed=0)
         beta_samples = result_matrix.extract()['beta']
         beta_means = beta_samples.mean(axis=0)
-        nptest.assert_allclose(beta_means, np.array(BETA), atol=.1)
+        nptest.assert_allclose(beta_means, np.array(BETA), atol=.5)
 
         #check that data frame result is same as matrix result
         df = make_data_frame_data(num_rows=NUM_ROWS, beta=BETA)
