@@ -10,7 +10,8 @@ from .. import family
 BETA = np.array([15, 5])
 NUM_ROWS = 2000
 ITERATIONS = 200
-
+PRIOR_BETA_MEAN = 10
+PRIOR_BETA_VARIANCE = .00001
 
 def make_matrix_data(num_rows, beta, noise_sd=1, binary=False):
     np.random.seed(seed=0)
@@ -47,12 +48,17 @@ class Tests(unittest.TestCase):
         nptest.assert_allclose(result_matrix.extract(permuted=False), result_data_frame.extract(permuted=False))
 
     def test_bayesglm_gaussian_priors(self):
+        iterations = 100
         x, y = make_matrix_data(num_rows=NUM_ROWS, beta=BETA)
-        normal_prior = NormalPrior(10, .000001)
-        prior1 = ((0))
-        result = bayesglm(x, y, family=family.gaussian(), iterations=ITERATIONS, seed=0)
-        beta_means = result.extract()['beta'].mean(axis=0)
-        nptest.assert_allclose(beta_means, np.array(BETA), atol=.1)
+        normal_prior = NormalPrior(PRIOR_BETA_MEAN, PRIOR_BETA_VARIANCE)
+        prior1 = (((i,), normal_prior) for i in [0,1])
+        prior2 = (((0, 1), normal_prior),)
+        result1 = bayesglm(x, y, family=family.gaussian(), iterations=iterations, seed=0, priors=prior1)
+        result2 = bayesglm(x, y, family=family.gaussian(), iterations=iterations, seed=0, priors=prior2)
+        nptest.assert_allclose(result1.extract(permuted=False), result2.extract(permuted=False))
+        print result1
+        beta_means = result1.extract()['beta'].mean(axis=0)
+        nptest.assert_allclose(beta_means, np.array([PRIOR_BETA_MEAN, PRIOR_BETA_MEAN]), atol=.01)
 
 
 
