@@ -56,7 +56,6 @@ class Tests(unittest.TestCase):
         result1 = bayesglm(x, y, family=family.gaussian(), iterations=iterations, seed=0, priors=prior1)
         result2 = bayesglm(x, y, family=family.gaussian(), iterations=iterations, seed=0, priors=prior2)
         nptest.assert_allclose(result1.extract(permuted=False), result2.extract(permuted=False))
-        print result1
         beta_means = result1.extract()['beta'].mean(axis=0)
         nptest.assert_allclose(beta_means, np.array([PRIOR_BETA_MEAN, PRIOR_BETA_MEAN]), atol=.01)
 
