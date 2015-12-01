@@ -67,4 +67,5 @@ class Tests(unittest.TestCase):
         beta_samples = result.extract()['beta']
         beta_means = beta_samples.mean(axis=0)
         true_betas = np.hstack([[0], BETA])
+        print(beta_means)
         nptest.assert_allclose(beta_means, true_betas, atol=1) # "0" is true parameter for constant
