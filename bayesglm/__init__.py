@@ -1,3 +1,2 @@
-from bayesglm.models import glm, RegressionModel, RegressionModels, NormalPrior, OutcomeDistributions, OutcomeDistribution
-
-#__all__ = [glm, RegressionModels, RegressionModel, NormalPrior]
+from bayesglm.models import bayesglm
+from bayesglm.family import gaussian, bernoulli, bernoulli_logit, probit, probit_approx

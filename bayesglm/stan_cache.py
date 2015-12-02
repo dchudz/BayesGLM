@@ -9,10 +9,16 @@ import os
 def stan_cache(model_code, model_name=None, **kwargs):
     """Use just as you would `stan`"""
     code_hash = md5(model_code.encode('ascii')).hexdigest()
+    cache_dir = os.path.join(bayesglm.__path__[0], ".cached_models")
+    try:
+        os.makedirs(cache_dir)
+    except OSError:
+        if not os.path.isdir(cache_dir):
+            raise
     if model_name is None:
-        cache_fn = os.path.join(bayesglm.__path__[0], ".cached_models", 'cached-model-{}.pkl'.format(code_hash))
+        cache_fn = os.path.join(cache_dir, 'cached-model-{}.pkl'.format(code_hash))
     else:
-        cache_fn = os.path.join(bayesglm.__path__[0], ".cached_models", 'cached-{}-{}.pkl'.format(model_name, code_hash))
+        cache_fn = os.path.join(cache_dir, 'cached-{}-{}.pkl'.format(model_name, code_hash))
     try:
         sm = pickle.load(open(cache_fn, 'rb'))
     except:
