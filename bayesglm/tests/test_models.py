@@ -67,13 +67,11 @@ class ModelTests(unittest.TestCase):
         beta_samples = result.extract()['beta']
         beta_means = beta_samples.mean(axis=0)
         true_betas = np.hstack([[0], BETA])
-        print(beta_means)
         nptest.assert_allclose(beta_means, true_betas, atol=1.5) # "0" is true parameter for constant
 
     def test_bayesglm_gaussian_priors(self):
         iterations = 100
         df = make_data_frame_data(num_rows=NUM_ROWS, beta=BETA)
-        print df.head()
         priors = {"x1": NormalPrior(PRIOR_BETA_MEAN1, PRIOR_BETA_VARIANCE),
                   "x2": NormalPrior(PRIOR_BETA_MEAN2, PRIOR_BETA_VARIANCE),
                   "x1:x2": NormalPrior(PRIOR_BETA_MEAN3, PRIOR_BETA_VARIANCE)}

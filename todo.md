@@ -6,3 +6,4 @@
 
 - should the design matrix be allowed to be degenerate? we have priors, so seems like yes. maybe file
 
+https://github.com/pydata/patsy/issues/42
