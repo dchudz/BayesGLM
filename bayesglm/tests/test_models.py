@@ -10,7 +10,9 @@ from .. import family
 BETA = np.array([15, 5])
 NUM_ROWS = 2000
 ITERATIONS = 200
-PRIOR_BETA_MEAN = 10
+PRIOR_BETA_MEAN1 = 10
+PRIOR_BETA_MEAN2 = 15
+PRIOR_BETA_MEAN3 = 2
 PRIOR_BETA_VARIANCE = .00001
 
 def make_matrix_data(num_rows, beta, noise_sd=1, binary=False):
@@ -29,7 +31,7 @@ def make_data_frame_data(num_rows, beta, noise_sd=1, binary=False):
     return df
 
 
-class Tests(unittest.TestCase):
+class ModelTests(unittest.TestCase):
 
     def test_load_model_template(self):
         self.assertTrue(type(load_model_template()) == str)
@@ -50,16 +52,14 @@ class Tests(unittest.TestCase):
     def test_bayesglm_gaussian_priors(self):
         iterations = 100
         x, y = make_matrix_data(num_rows=NUM_ROWS, beta=BETA)
-        normal_prior = NormalPrior(PRIOR_BETA_MEAN, PRIOR_BETA_VARIANCE)
+        normal_prior = NormalPrior(PRIOR_BETA_MEAN1, PRIOR_BETA_VARIANCE)
         prior1 = (((i,), normal_prior) for i in [0,1])
         prior2 = (((0, 1), normal_prior),)
         result1 = bayesglm(x, y, family=family.gaussian(), iterations=iterations, seed=0, priors=prior1)
         result2 = bayesglm(x, y, family=family.gaussian(), iterations=iterations, seed=0, priors=prior2)
         nptest.assert_allclose(result1.extract(permuted=False), result2.extract(permuted=False))
         beta_means = result1.extract()['beta'].mean(axis=0)
-        nptest.assert_allclose(beta_means, np.array([PRIOR_BETA_MEAN, PRIOR_BETA_MEAN]), atol=.01)
-
-
+        nptest.assert_allclose(beta_means, np.array([PRIOR_BETA_MEAN1, PRIOR_BETA_MEAN1]), atol=.01)
 
     def test_bayesglm_logistic(self):
         df = make_data_frame_data(num_rows=NUM_ROWS, beta=BETA, binary=True)
@@ -67,5 +67,14 @@ class Tests(unittest.TestCase):
         beta_samples = result.extract()['beta']
         beta_means = beta_samples.mean(axis=0)
         true_betas = np.hstack([[0], BETA])
-        print(beta_means)
         nptest.assert_allclose(beta_means, true_betas, atol=1.5) # "0" is true parameter for constant
+
+    def test_bayesglm_gaussian_priors(self):
+        iterations = 100
+        df = make_data_frame_data(num_rows=NUM_ROWS, beta=BETA)
+        priors = {"x1": NormalPrior(PRIOR_BETA_MEAN1, PRIOR_BETA_VARIANCE),
+                  "x2": NormalPrior(PRIOR_BETA_MEAN2, PRIOR_BETA_VARIANCE),
+                  "x1:x2": NormalPrior(PRIOR_BETA_MEAN3, PRIOR_BETA_VARIANCE)}
+        result = bayesglm("y ~ 0 + x1 + x2 + x1*x2", df, family=family.gaussian(), iterations=iterations, seed=0, priors=priors)
+        beta_means = result.extract()['beta'].mean(axis=0)
+        nptest.assert_allclose(beta_means, np.array([PRIOR_BETA_MEAN1, PRIOR_BETA_MEAN2, PRIOR_BETA_MEAN3]), atol=.01)
