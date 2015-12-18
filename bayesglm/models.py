@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from bayesglm.stan_cache import stan_cache
 from patsy import dmatrices
 from multipledispatch import dispatch
@@ -6,10 +7,21 @@ import os
 
 from .family import Family
 
-class NormalPrior:
+
+class PriorForCoefficient:
+    __metaclass__ = ABCMeta
+    @abstractmethod
+    def to_string(self):
+        pass
+
+
+class NormalPrior(PriorForCoefficient):
     def __init__(self, mu, sigma):
         self.mu = mu;
         self.sigma = sigma
+
+    def __repr__(self):
+        return self.to_string()
 
     def to_string(self):
         return "normal({0},{1})".format(self.mu, self.sigma)
@@ -66,5 +78,6 @@ def bayesglm(formula, df, family, priors=None, **kwargs):
 
     def slice_to_range(s):
         return range(s.start, s.stop)
+
     beta_priors_list = [(slice_to_range(x.design_info.slice(key)), val) for key, val in priors.items()]
     return bayesglm(x_, y_, family=family, priors=beta_priors_list, **kwargs)

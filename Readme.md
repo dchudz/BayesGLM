@@ -1,3 +1,5 @@
+(work in progress!)
+
 [![Build Status](https://travis-ci.org/dchudz/BayesGLM.svg?branch=master)](https://travis-ci.org/dchudz/BayesGLM.svg?branch=master)
 
 # BayesGLM
