@@ -2,6 +2,7 @@
 
 from patsy import dmatrices
 
+
 def get_term_names(formula, data):
     y, x = dmatrices(formula, data)
     return x.design_info.term_names
