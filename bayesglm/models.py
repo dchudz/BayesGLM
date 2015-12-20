@@ -1,15 +1,16 @@
 from abc import ABCMeta, abstractmethod
-from bayesglm.stan_cache import stan_cache
-from patsy import dmatrices
-from multipledispatch import dispatch
-import numpy as np
 import os
 
-from .family import Family
+from patsy import dmatrices
+import multipledispatch
+import numpy as np
+
+from bayesglm.stan_cache import stan_cache
 
 
 class PriorForCoefficient:
     __metaclass__ = ABCMeta
+
     @abstractmethod
     def to_string(self):
         pass
@@ -17,7 +18,7 @@ class PriorForCoefficient:
 
 class NormalPrior(PriorForCoefficient):
     def __init__(self, mu, sigma):
-        self.mu = mu;
+        self.mu = mu
         self.sigma = sigma
 
     def __repr__(self):
@@ -36,13 +37,13 @@ def load_model_template():
 
 def parameter_priors_to_string(parameter_priors):
     # parameter_priors should be a list of tuples (r, prior) where r is a range and prior is a prior like NormalPrior
-    #   This approach leads to different stan models depending on which parameters you choose to give which priors.
-    #   We could probably avoid recompiling so much by switching to an approach where the stan code is always the same
+    # This approach leads to different stan models depending on which parameters you choose to give which priors.
+    # We could probably avoid recompiling so much by switching to an approach where the stan code is always the same
     #   for any set of priors.
     model_string = ""
     for r, prior in parameter_priors:
         for i in r:
-            model_string += "beta[{0}] ~ {1};\n".format(i+1, prior.to_string()) # stan is 1-indexed
+            model_string += "beta[{0}] ~ {1};\n".format(i + 1, prior.to_string())  # stan is 1-indexed
     return model_string
 
 
@@ -54,7 +55,7 @@ def stan_code(family, beta_priors):
                                         beta_priors=parameter_priors_to_string(beta_priors))
 
 
-@dispatch(np.ndarray, np.ndarray)
+@multipledispatch.dispatch(np.ndarray, np.ndarray)
 def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
     num_rows, num_predictors = x.shape
     model_code = stan_code(family, priors)
@@ -66,7 +67,7 @@ def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
     return fit
 
 
-@dispatch(str, object)
+@multipledispatch.dispatch(str, object)
 def bayesglm(formula, df, family, priors=None, **kwargs):
     if not priors:
         priors = {}

@@ -6,8 +6,8 @@ from hashlib import md5
 import bayesglm
 import os
 
+
 def stan_cache(model_code, model_name=None, **kwargs):
-    """Use just as you would `stan`"""
     code_hash = md5(model_code.encode('ascii')).hexdigest()
     cache_dir = os.path.join(bayesglm.__path__[0], ".cached_models")
     try:
