@@ -59,6 +59,7 @@ def stan_code(family, beta_priors):
 def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
     num_rows, num_predictors = x.shape
     model_code = stan_code(family, priors)
+    print model_code
     fit = stan_cache(model_code=model_code,
                      data={"x": x, "N": num_rows, "K": num_predictors, "y": y},
                      iter=iterations,
