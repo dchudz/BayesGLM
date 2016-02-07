@@ -13,7 +13,7 @@ class Family(object):
         self.link = link
 
 
-def gaussian(link = ""):
+def gaussian(link=""):
     outcome_distribution = OutcomeDistribution(
         y_type="real",
         parameter_names=["sigma"],

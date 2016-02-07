@@ -3,3 +3,5 @@ __pycache__/
 BayesGLM.egg-info/
 bayesglm/.cached_models
 *.pyc
+.ipynb_checkpoints
+examples/data/
