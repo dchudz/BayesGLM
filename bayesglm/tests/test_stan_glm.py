@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.testing as nptest
-from scipy.special import logit, expit
+
 import pandas as pd
 import unittest
 
