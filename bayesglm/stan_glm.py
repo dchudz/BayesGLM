@@ -1,4 +1,3 @@
-from abc import ABCMeta, abstractmethod
 import os
 
 from patsy import dmatrices
@@ -6,26 +5,6 @@ import multipledispatch
 import numpy as np
 
 from bayesglm.stan_cache import stan_cache
-
-
-class PriorForCoefficient:
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def to_string(self):
-        pass
-
-
-class NormalPrior(PriorForCoefficient):
-    def __init__(self, mu, sigma):
-        self.mu = mu
-        self.sigma = sigma
-
-    def __repr__(self):
-        return self.to_string()
-
-    def to_string(self):
-        return "normal({0},{1})".format(self.mu, self.sigma)
 
 
 def load_model_template():
@@ -56,7 +35,7 @@ def stan_code(family, beta_priors):
 
 
 @multipledispatch.dispatch(np.ndarray, np.ndarray)
-def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
+def stan_glm(x, y, family, iterations=2000, priors=(), **kwargs):
     num_rows, num_predictors = x.shape
     model_code = stan_code(family, priors)
     fit = stan_cache(model_code=model_code,
@@ -68,7 +47,7 @@ def bayesglm(x, y, family, iterations=100, priors=(), **kwargs):
 
 
 @multipledispatch.dispatch(str, object)
-def bayesglm(formula, df, family, priors=None, **kwargs):
+def stan_glm(formula, df, family, priors=None, **kwargs):
     if not priors:
         priors = {}
     y, x = dmatrices(formula, df)
@@ -81,4 +60,4 @@ def bayesglm(formula, df, family, priors=None, **kwargs):
         return range(s.start, s.stop)
 
     beta_priors_list = [(slice_to_range(x.design_info.slice(key)), val) for key, val in priors.items()]
-    return bayesglm(x_, y_, family=family, priors=beta_priors_list, **kwargs)
+    return stan_glm(x_, y_, family=family, priors=beta_priors_list, **kwargs)
